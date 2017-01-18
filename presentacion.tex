@@ -21,12 +21,13 @@
 \usepackage{boxedminipage} %modified Madrid footer
 \usepackage{graphicx}
 \usepackage{caption}
+\usepackage[utf8]{inputenc}
 %\usepackage{bm}         % For typesetting bold math (not \mathbold)
 %\logo{\includegraphics[height=0.6cm]{yourlogo.eps}}
 %
 \usepackage{amsmath}
 
-\title[ACR]{Adaptive Code Refinement}
+\title[ACR]{Refinamiento Adaptivo de Código}
 \author{C\'esar Sabater} \institute[UNR] {
 %University of Strasbourg \\
 
@@ -85,30 +86,130 @@
     \begin{center}
         \large{ Presentaci\'on de Tesina }
     \end{center}
-
 \end{frame}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-    \frametitle{Simulation}
+    \frametitle{Introduccion}
     %more concrete simualtions, but a more abstract kind of problem
     \begin{itemize}
+    \item
+    Muchas aplicaciones de \textbf{cómputo intensivo} realizan
+    \textbf{cálculos aproximados}
+    \item 
+    Algunas Razones: 
+    \begin{itemize}
         \item
-			A simulation is a program that immitates the behavior of a system over time
+			para simular objetos o fenomenos del mundo real
 		\item
-			It implements the abstract model describing the system
+			trabajan con sensores limitados en precision
 		\item
-			\textbf{Usssually, it requires a big ammount of computing power }
+			estan sometidas a un deadline de tiempo
+		\item
+			calculan resultados preliminares
     \end{itemize}
-    	\begin{figure} 
-	 \includegraphics[scale=0.18]{img/wind_sim.jpg}
-    \end{figure}
+    \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Introduccion}
+Algunos ejemplos de estas aplicaciones son: 
+    \begin{itemize}
+        \item
+			Simulaciónes Físicas
+		\item
+			Sensores de entrada, algoritmos de procesamiento
+		\item
+			Decodificación de Video en tiempo real
+		\item 
+			Predicción de Terremotos
+		\item 
+			Aplicaciones de exploracion de geofisica
+    \end{itemize}
+    %~ Generalmente, estas aplicaciones necesitan una gran cantitdad de poder computacional.
+   %~ \begin{figure} 
+	 %~ \includegraphics[scale=0.18]{img/wind_sim.jpg}
+    %~ \end{figure}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Introduccion}
+Normalmente, el desarrollo de estos 
+algoritmos puede dividirse en \textbf{dos estapas}:
+\begin{itemize}
+\item Desarrollo de un kernel de computo ideal
+	\begin{itemize} 
+	\item ajuste del algoritmo
+	\item debugueo
+	\end{itemize}
+\item Optimizacion a una version de produccion
+	\begin{itemize}
+	\item escalar al tamano real del problema
+	\item satisfacer un deadline
+	\end{itemize}
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Introduccion}
+Traducir un codigo ideal tiene complicaciones: 
+\begin{itemize} 
+\item es \textcolor{red}{complejo}
+\item \textcolor{red}{lleva tiempo}
+\item conduce a \textcolor{red}{codigos menos mantenibles}
+\item hay que \textcolor{red}{hacerlo nuevamente} cuando hay cambios grandes en la estrategia
+\end{itemize}
+Esto se podria reducir con un \textbf{enfoque automatico de compilacion}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Introduccion}
+Existen enfoques automaticos de optimizacion para computo intensivo:
+\begin{itemize}
+\item manteniendo la semantica original
+\begin{itemize}
+\item paralelizacion
+\item localidad de datos
+\item vectorizacion
+\end{itemize}
+\textcolor{blue}{bien abordados por los enfoques automaticos}
+\item modificando la semantica original
+\begin{itemize}
+\item relajacion de dependencias
+\item 
+
+
+\end{itemize}
+
+
+
+
+%~ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%t%%%%%%%%%%%%%%%%%%
+%~ \begin{frame}
+    %~ \frametitle{Ejemplo:  Simulación de Fluidos}
+    %~ \begin{itemize}
+        %~ \item
+			%~ Calcula velocidad, presión, densidad, etc. de un en todo el espacio
+			%~ que este ocupa a lo largo del tiempo.
+		%~ \item
+			%~ Las leyes que describen su evolución no tienen una
+			%~ solucion  de forma cerrada.
+		%~ \item 
+			%~ Para algunas aplicaciónes, los estados necesitan ser calculados
+			%~ con deadline de tiempo, como en la simulacion en tiempo real
+    %~ \end{itemize}
+    
+   %~ \begin{figure} 
+	  %~ \includegraphics[scale=0.18]{img/wind_sim.jpg}
+    %~ \end{figure}
+%~ \end{frame}
+%~ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 % End of slides
 \end{document}
-
+ 
 
 

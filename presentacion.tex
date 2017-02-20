@@ -761,7 +761,7 @@ ACR toma un codigo con \textbf{conocimiento de dominio} embebido
 \frametitle{Refinamiento Adaptivo de Código}
 Componentes:
 \begin{enumerate}
-\item \textbf{Conocimient Especifico de Dominio}
+\item \textbf{Conocimiento Especifico de Dominio}
 \item Monitoreo del Estado de Ejecucion
 \item Generacion de Codigo Optimizado
 \item Threads de Ejecucion
@@ -876,7 +876,7 @@ Componentes:
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]
-\frametitle{Monitoreo del Estado de Ejecucion}
+\frametitle{ACR: Monitoreo del Estado de Ejecucion}
 \begin{block}{}
 ACR necesita obtener \textbf{informacion relevante} sobre la ejecucion
 \begin{itemize}
@@ -903,7 +903,7 @@ Para ello, utilizamos una \textbf{cuadricula regular}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Monitoreo del Estado de Ejecucion}
+\frametitle{ACR: Monitoreo del Estado de Ejecucion}
 \begin{block}{Obtencion de Informacion}
 \begin{enumerate} 
 \item \textbf{filtro} de a valores  (opcional)
@@ -918,7 +918,7 @@ Para ello, utilizamos una \textbf{cuadricula regular}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]
-\frametitle{Monitoreo del Estado de Ejecucion}
+\frametitle{ACR: Monitoreo del Estado de Ejecucion}
 \begin{block}{pragmas}
 \begin{lstlisting}[basicstyle=\scriptsize,language=C]
 #pragma grid(14) 
@@ -949,16 +949,17 @@ Componentes:
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Generacion de Codigo Optimizado}
+\frametitle{ACR: Generacion de Codigo Optimizado}
 \begin{block}{al principio de la ejecucion}
 \textbf{analisis} del kernel original con \textbf{Clan}
 \end{block}
-\begin{block}{luego de cada monitoreo}
+\begin{block}{Transformaciones Regulares}
+luego de un cambio significativo en el estado:
 \begin{enumerate}
 \item aplicacion \textbf{estrategias de transformacion}
 \begin{itemize}
 	\item omitir calculos innecesarios
-	\item usar bloques de codigo alternativos
+	\item usar bloques de codigo alternativost
 \end{itemize}
 \item \textbf{construir representacion poliedrica} de las regiones
 \item \textbf{generacion de codigo} con Spot
@@ -968,7 +969,7 @@ Componentes:
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]
-\frametitle{Asignacion de Estrategias}
+\frametitle{ACR: signacion de Codigo}
 \begin{columns}
 \column{0.32\textwidth}
 \begin{center}
@@ -1004,14 +1005,99 @@ for (int i = 0; i < N; i++)
 \end{columns}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-
-
-
-
+\begin{frame}
+\frametitle{ACR: Asignacion de Codigo}
+\begin{columns}
+\column{0.32\textwidth}
+\begin{center}
+\includegraphics[scale=0.2]{img/asignacion_codigo.png}
+\end{center}
+\column{0.65\textwidth}
+\begin{block}{propiedades del codigo generado}
+\begin{itemize}
+\item \textcolor{blue}{bajo costo de control}
+\item \textbf{se corresponde biunivocamente} con su cuadricula
+\item realiza calculos complejos \textbf{solo donde es necesario}
+\item \textbf{mantiene las dependencias} lo mas posible
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Refinamiento Adaptivo de Código}
+Componentes:
+\begin{enumerate}
+\item Conocimiento Especifico de Dominio
+\item Monitoreo del Estado de Ejecucion
+\item Generacion de Codigo Optimizado
+\item \textbf{Threads de Ejecucion}
+\end{enumerate}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{ACR: Threads de Ejecucion}
+\begin{block}{}
+\textbf{alivianar sobrecarga de generacion}: 2 threads
+\end{block}
+\begin{block}{thread de calculo}
+\begin{itemize}
+		\item realiza \textbf{calculos intensivos}
+		\item \textbf{monitorea} el estado de ejecucion
+		\item \textbf{solicita} codigo optimizado
+		\item \textbf{recibe y carga dinamicamente} codigo optimizado
+		\item si las optimizaciones no son adecuadas, utiliza codigo original
+\end{itemize}
+\end{block}
+\begin{block}{thread de generacion}
+	\begin{enumerate}
+		\item \textbf{recibe solicitudes} de generacion
+		\item \textbf{genera y compila} codigo optimizado
+		\item \textbf{responde las solicitudes}
+	\end{enumerate}
+\end{block}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{ACR: Threads de Ejecucion}
+\begin{center}
+\includegraphics[scale=0.5]{img/threads_2.png}
+\end{center}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame} 
+\frametitle{Contenido} 
+\begin{enumerate}
+\item Transformación de Código: Modelo Poliédrico
+\item Herramienta estática: Spot
+\item Refinamiento Adaptivo de Código
+\item \textbf{Experimentos con Simulación de Fluidos}
+\item Conclusiones y Trabajo Futuro
+\end{enumerate}
+\end{frame} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Caso de Estudio: Simulacion de Fluidos}
+\begin{columns}
+\column{0.60\textwidth}
+	\begin{itemize}
+		\item hola
+	\end{itemize}
+\column{0.40\textwidth}
+\begin{center}
+\includegraphics[scale=0.22]{img/saved_ssnapshot.png}
+\end{center}
+\begin{center}
+\includegraphics[scale=0.25]{img/particles_velocity.png}
+\end{center}
+\end{columns}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
 \begin{frame}
 \frametitle{}
 

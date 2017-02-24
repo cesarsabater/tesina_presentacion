@@ -138,8 +138,8 @@ Algunos ejemplos de estas aplicaciones son:
 	 %~ \includegraphics[scale=0.18]{img/wind_sim.jpg}
     %~ \end{figure}
 \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \frametitle{Introducción}
 Normalmente, el desarrollo de estos 
 algoritmos puede dividirse en \textbf{dos etapas}:
@@ -921,8 +921,8 @@ Para ello, utilizamos una \textbf{cuadricula regular}
 \frametitle{ACR: Monitoreo del Estado de Ejecucion}
 \begin{block}{pragmas}
 \begin{lstlisting}[basicstyle=\scriptsize,language=C]
-#pragma grid(14) 
-#pragma monitor (presion[i][j],max,color)
+#pragma ACR grid(14) 
+#pragma ACR monitor(presion[i][j], max, color)
 int color(float val) {
   if      (val >= P_HIGH) return C_RED; 
   else if (val >= P_MED)  return C_YELLOW;
@@ -987,19 +987,19 @@ for (int i = 0; i < N; i++)
 \begin{block}{}
 \begin{lstlisting}[basicstyle=\scriptsize]
 // estrategias
-#pragma strategy direct(C_RED, a1)
-#pragma strategy direct(C_CYAN, a2)
-#pragma strategy direct(C_BLUE, a3)
-#pragma strategy zone
+#pragma ACR strategy direct(C_RED, a1)
+#pragma ACR strategy direct(C_CYAN, a2)
+#pragma ACR strategy direct(C_BLUE, a3)
+#pragma ACR strategy zone
   ("i < N/14 and |j - N/2| < N/14", a1)
 \end{lstlisting}
 \end{block}
 \begin{block}{}
 \begin{lstlisting}[basicstyle=\scriptsize]
 // codigo alternativo
-#pragma alternatve a1(code, prec(i,j);)
-#pragma alternatve a2(code, ahorr(i,j);)
-#pragma alternatve a3(code, minim(i,j);)
+#pragma ACR alternatve a1(code, prec(i,j);)
+#pragma ACR alternatve a2(code, ahorr(i,j);)
+#pragma ACR alternatve a3(code, minim(i,j);)
 \end{lstlisting}
 \end{block}
 \end{columns}
@@ -1077,30 +1077,175 @@ Componentes:
 \end{frame} 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Caso de Estudio: Simulacion de Fluidos}
+\frametitle{Caso de Estudio: Simulacion Visual de Fluidos}
 \begin{columns}
 \column{0.60\textwidth}
+\begin{block}{Simulacion de Fluidos}
 	\begin{itemize}
-		\item hola
+		\item simula fluidos con diferentes caracteristicas
+		\item agua, aire, vapor, gas, etc.
+		\item calcula velocidad y densidad en funcion del tiempo 
+		\item aproxima las \textit{Ecuaciones Navier-Stokes}
 	\end{itemize}
+\end{block}
+\begin{block}{Algoritmo de Aproximacion}
+\begin{itemize}
+\item orientado a Graficos Computacionales para Juegos
+\item basado en particulas fijas y regulares
+\item muy adecuado para optimizar con ACR
+\end{itemize}
+\end{block}
 \column{0.40\textwidth}
 \begin{center}
-\includegraphics[scale=0.22]{img/saved_ssnapshot.png}
+\includegraphics[scale=0.20]{img/saved_ssnapshot.png}
 \end{center}
 \begin{center}
-\includegraphics[scale=0.25]{img/particles_velocity.png}
+\includegraphics[scale=0.23]{img/particles_velocity.png}
 \end{center}
 \end{columns}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-
-
+\begin{frame}[fragile]
+\frametitle{Caso de Estudio: Simulacion Visual de Fluidos}
+\begin{columns}
+\column{0.60\textwidth}
+\begin{block}{Estado}
+	\begin{itemize}
+		\item cuadricula regular
+		\item velocidad y densidad
+		\item se actualiza \textbf{cada \textit{timestep}}
+	\end{itemize}
+\end{block}
+\begin{block}{}
+%~ \begin{lstlisting}[basicstyle=\scriptsize,language=C]
+\begin{center}
+\begin{verbatim}
+float density[N][N]; 
+float velocity_x[N][N];
+float velocity_y[N][N];
+\end{verbatim}
+\end{center}
+%~ \end{lstlisting}
+\end{block}
+\column{0.40\textwidth}
+\begin{center}
+\includegraphics[scale=0.20]{img/saved_ssnapshot.png}
+\end{center}
+\begin{center}
+\includegraphics[scale=0.23]{img/particles_velocity.png}
+\end{center}
+\end{columns}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Caso de Estudio: Simulacion Visual de Fluidos}
+\begin{columns}
+\column{0.60\textwidth}
+\begin{block}{kernel}
+\begin{verbatim}
+void lin_solve
+(int N, float **x, float **x0)
+{
+ int i, j, k;
+ for ( k=0 ; k < PRECISION ; k++ ) 
+   for ( i=1 ; i<=N ; i++ ) 
+   for ( j=1 ; j<=N ; j++ ) 
+    x[i][j] = computo(i, j, N,x,x0)
+}
+\end{verbatim}
+\end{block}
+\column{0.40\textwidth}
+%~ \begin{block}{dependencias}
+\begin{center}\textbf{Dependencias}\end{center}
+\begin{center}
+\includegraphics[scale=0.4]{img/deps_kern_2.png}
+\end{center}
+%~ \end{block}
+\end{columns}
+\begin{block}{Calculo de Estados}
+\begin{itemize}
+\item \textbf{aproximacion iterativa} \textit{Gauss-Seidel}
+\item iteramos \textbf{a lo ancho}
+\end{itemize}
+\end{block}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Aplicando ACR}
+\begin{block}{ahorro de calculos}
+con \textbf{baja densidad} hay \textbf{convergencia rapida} 
+\begin{itemize}
+\item pocos calculos en las particulas con poca densidad
+\item muchos calculos en particulas de alta densidad
+\end{itemize}
+\end{block}
+\begin{block}{}
+\begin{verbatim}
+#pragma ACR grid(10)
+#pragma ACR monitor(density[i][j], max, filter)
+\end{verbatim}
+\end{block}
+\begin{center}
+\includegraphics[scale=0.22]{img/sim_and_grid.png}
+\end{center}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Aplicando ACR}
+\begin{block}{Estrategias y Bloques Alternativos}
+\begin{verbatim}
+#pragma ACR alternative a1(parametro, PRECISION=P_MIN)
+#pragma ACR alternative a2(parametro, PRECISION=P_MED)
+#pragma ACR alternative a3(parametro, PRECISION=P_ALTA)
+#pragma ACR strategy direct(CASI_NULO, a1)
+#pragma ACR strategy direct(MODERADO, a2)
+#pragma ACR strategy direct(ALTO, a3)
+\end{verbatim}
+\end{block}
+\begin{center}
+\includegraphics[scale=0.2]{img/all_sights.png}
+\end{center}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{}
+\frametitle{Resultados Experimentales: Tiempo de Ejecución}
+\begin{center}
+\includegraphics[scale=0.55]{img/tiempos_recortado_2.png}
+\end{center}
+\begin{tabular}{|l|r|r|r|r|r|r|r|r|p{5cm}|}
+\hline
+iter   & 50  & 100 & 200 & 300  & 500  & 1000 & 1500 & 2000 \\ \hline
+Original(-O3) & 2,3 & 4,8 & 9,9 & 15,3 & 24,3 & 46,5 & 68,0 & 89,1 \\ \hline
+Manual   & 1,6 & 3,2 & 6,5 & 9,7  & 16,2 & 32,4 & 48,6 & 64,8 \\ \hline 
+ACR      & 1,1 & 2,5 & 4,4 & 6,6  & 11,0 & 27,6 & 33,4 & 46,7 \\ \hline 
+\end{tabular}
 
+%~ iteraciones  & Original con -O3 & Opt. Manual & Opt. con ACR \\ \hline % & Ideal ACR \\ \hline
+%~ 50 &    2,3    &  1,6   & 1,1   \\ \hline % & 1,092 
+%~ 100 &   4,8    &  3,2   & 2,5   \\ \hline % & 2,184 
+%~ 200 &   9,9    &  6,5   & 4,4   \\ \hline % & 4,368  
+%~ 300 &   15,3   &  9,7   & 6,6   \\ \hline  % &   6,552 
+%~ 500 &   24,3   &  16,2  & 11,0  \\ \hline % &   10,92
+%~ 1000 &  46,5   &  32,4  & 27,6   \\ \hline % &   21,84 
+%~ 1500 &  68,0   &  48,6  & 33,4  \\ \hline % &   32,76 
+%~ 2000 &  89,1   &  64,8  & 46,7  \\  % &   43,68 
+%~ \hline
+%~ \end{tabular}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Resultados Experimentales: Ahorro de Calculos}
+\begin{center}
+\includegraphics[scale=0.75]{img/calculos.png}
+\end{center}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Resultados Experimentales: Comparacion de Precision}
+\begin{center}
+\includegraphics[scale=0.60]{img/precision_recortado.png}
+\end{center}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
